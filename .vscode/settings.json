@@ -1,0 +1,7 @@
+{
+    "C_Cpp.default.compilerPath": "",
+    "files.associations": {
+        "costants.h": "c",
+        "macros.h": "c"
+    }
+}
