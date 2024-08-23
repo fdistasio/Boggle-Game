@@ -10,10 +10,10 @@ void* thread_write_server(void* socketFD) {
     char* prompt = "[PROMPT PAROLIERE]--> ";            // Prompt di avvio
 
     // Casting e assegnamento del Socket File Descriptor
-	int clientSocketFD = *((int*) socketFD); 
+    int clientSocketFD = *((int*) socketFD); 
 
     // Deallocazione del parametro "socketFD"
-	free(socketFD);
+    free(socketFD);
 
     // Pulizia del buffer di input 
     clean_buffer(BUF_SIZE, fromUser);
@@ -312,7 +312,7 @@ void exit_game(int socketFD) {
 // Elimina '\n' sostituendolo con '\0'
 void del_endl(char str[]) {
 
-	int length = strlen(str);   // Lunghezza di "str"
+    int length = strlen(str);   // Lunghezza di "str"
     str[length - 1] = '\0';     // Rimozione '\n' tramite '\0'
 
 }
@@ -332,12 +332,12 @@ void clean_buffer(int size, char buf[]) {
 
 // Controlla che il numero di parametri da linea di comando sia corretto
 void check_params(int argc, int paramsNum) {
-	
+    
     // Se "argc" e' diverso dal numero richiesto di parametri "paramsNum" lancia un errore
-	if(argc != paramsNum) {
-		perror("Parameters Error");
-		exit(errno);
-	}
+    if(argc != paramsNum) {
+        perror("Parameters Error");
+        exit(errno);
+    }
 
 }
 
@@ -360,7 +360,7 @@ void init_params(int argc, char* argv[], char serverName[], int* serverPort) {
 void* thread_read_server(void* socketFD) {
 
     message receive;                            // Struttura per il messaggio da riceverer
-	int clientSocketFD = *((int*) socketFD);    // Casting del Socket File Descriptor
+    int clientSocketFD = *((int*) socketFD);    // Casting del Socket File Descriptor
 
     // Deallocazione del parametro "socketFD"
     free(socketFD);
@@ -419,7 +419,7 @@ void handle_server_response(message response, int socketFD) {
         handle_word_points(response);
         break;
 
-	// Chiusura della connessione in caso di messaggio non valido oppure "MSG_FINE"
+    // Chiusura della connessione in caso di messaggio non valido oppure "MSG_FINE"
     default:
         handle_exit(response, socketFD);
         break;
@@ -478,10 +478,10 @@ void print_str_to_matrix(int rows, int columns, char toMatrix[]) {
 
     char *token;                       // Elemento corrente di "toMatrix"
 
-	// Stampa dei separatori iniziali
+    // Stampa dei separatori iniziali
     printf("\n\n");
-	print_separators(columns);
-	printf("\n");
+    print_separators(columns);
+    printf("\n");
 
     // Stampa del primo elemento
     token = strtok(toMatrix, " ");
@@ -498,8 +498,8 @@ void print_str_to_matrix(int rows, int columns, char toMatrix[]) {
 
     }
     
-	// Stampa di ogni elemento seguito da una riga di separatori
-	for(int i = 0 ; i < rows ; i++) {
+    // Stampa di ogni elemento seguito da una riga di separatori
+    for(int i = 0 ; i < rows ; i++) {
 
         for(int j = 0 ; j < columns ; j++) {
             
@@ -524,10 +524,10 @@ void print_str_to_matrix(int rows, int columns, char toMatrix[]) {
         }
 
         printf("\n");
-		print_separators(columns);
-		printf("\n");
+        print_separators(columns);
+        printf("\n");
 
-	}
+    }
 
     printf("\n");
 
@@ -537,10 +537,10 @@ void print_str_to_matrix(int rows, int columns, char toMatrix[]) {
 
 // Stampa separatori
 void print_separators(int columns) {
-	
+    
     // Per ogni colonna stampa un separatore
-	for(int j = 0 ; j < columns ; j++) 
-		printf("+---+ ");
+    for(int j = 0 ; j < columns ; j++) 
+        printf("+---+ ");
 
 }
 
@@ -586,13 +586,13 @@ void handle_word_points(message response) {
 void handle_exit(message response, int socketFD) {
 
     int returnValue;
-	char *disconnectPrint = "Disconnessione...\n";		// Messaggio di disconnessione
+    char *disconnectPrint = "Disconnessione...\n";		// Messaggio di disconnessione
 
-	// Stampa della disconnessione su stdout
-	SYSC(returnValue, write(STDOUT_FILENO, disconnectPrint, sizeof(char) * strlen(disconnectPrint)), "Error Write Connect");
+    // Stampa della disconnessione su stdout
+    SYSC(returnValue, write(STDOUT_FILENO, disconnectPrint, sizeof(char) * strlen(disconnectPrint)), "Error Write Connect");
 
-	// Chiusura del socket
-	SYSC(returnValue, close(socketFD), "Close socket Error");
+    // Chiusura del socket
+    SYSC(returnValue, close(socketFD), "Close socket Error");
 
     // Terminazione thread
     pthread_exit(NULL);

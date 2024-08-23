@@ -55,12 +55,12 @@ extern pthread_cond_t notFullQueue;											// Variabile di condizione relativ
 
 typedef struct {
 
-	char serverName[MAX_PARAM_SIZE];				// Nome del server
-	int serverPort;									// Porta del server 
-	char matrixFileName[MAX_PARAM_SIZE];			// Nome del file delle matrici
-	int durata;										// Durata delle partite (espressa in minuti)
-	int seed;										// Seed per srand()
-	char dictionaryFileName[MAX_PARAM_SIZE];		// Nome del file dizionario
+    char serverName[MAX_PARAM_SIZE];				// Nome del server
+    int serverPort;									// Porta del server 
+    char matrixFileName[MAX_PARAM_SIZE];			// Nome del file delle matrici
+    int durata;										// Durata delle partite (espressa in minuti)
+    int seed;										// Seed per srand()
+    char dictionaryFileName[MAX_PARAM_SIZE];		// Nome del file dizionario
 
 } params;
 
@@ -70,17 +70,17 @@ typedef struct {
 
 typedef struct qn {
 
-	int score;								// Punteggio
-	char username[MAX_USERNAME_SIZE];		// Username
- 	struct qn * next; 						// Puntatore all'elemento successivo della coda
-	struct qn * prev;						// Puntatore all'elemento precedente della coda
+    int score;								// Punteggio
+    char username[MAX_USERNAME_SIZE];		// Username
+     struct qn * next; 						// Puntatore all'elemento successivo della coda
+    struct qn * prev;						// Puntatore all'elemento precedente della coda
 
 } queue_node;
 
 typedef struct {
 
-		queue_node* head;	// Puntatore alla testa della coda
-		queue_node* tail;	// Puntatore alla fine della coda
+        queue_node* head;	// Puntatore alla testa della coda
+        queue_node* tail;	// Puntatore alla fine della coda
 
 } queue;
 
@@ -101,9 +101,9 @@ typedef struct ln {
 
 typedef struct {
 
-	char matrixFileName[MAX_PARAM_SIZE];			// Nome del file delle matrici
-	int generateFrom;								// Indica come inizializzare la matrice, 0 random, altrimenti da file
-	int durata;										// Durata delle partite (espressa in minuti)
+    char matrixFileName[MAX_PARAM_SIZE];			// Nome del file delle matrici
+    int generateFrom;								// Indica come inizializzare la matrice, 0 random, altrimenti da file
+    int durata;										// Durata delle partite (espressa in minuti)
 
 } arb_args;
 
@@ -113,9 +113,9 @@ typedef struct {
 
 typedef struct {
 
-	int clientSocketFD;								// File descriptor del socket
-	char dictionaryFileName[MAX_PARAM_SIZE];		// Nome del file dizionario
-	queue* scoresQueue;								// Coda condivisa dei punteggi
+    int clientSocketFD;								// File descriptor del socket
+    char dictionaryFileName[MAX_PARAM_SIZE];		// Nome del file dizionario
+    queue* scoresQueue;								// Coda condivisa dei punteggi
 
 } client_handler_args;
 
@@ -125,8 +125,8 @@ typedef struct {
 
 typedef struct {
 
-	int score;										// Punteggio
-	char username[MAX_USERNAME_SIZE];				// Username
+    int score;										// Punteggio
+    char username[MAX_USERNAME_SIZE];				// Username
 
 } player;
 
