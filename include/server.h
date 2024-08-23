@@ -25,29 +25,29 @@
 
 // Variabili globali
 
-extern pthread_t clientHandlerThreads[MAX_CONNECTED_CLIENTS];				// Array relativo ai tid dei thread che gestiscono gli utenti
-extern int clientSocketFileDescriptors[MAX_CONNECTED_CLIENTS];				// Array relativo ai file descriptor dei socket dei client
-extern char board[MATRIX_ROWS][MATRIX_COLUMNS][MAX_ELEM_LENGTH];			// Matrice di gioco
-extern char clientsUsernames[MAX_CONNECTED_CLIENTS][MAX_USERNAME_SIZE];		// Username dei client connessi
-extern int numClients;														// Numero dei client connessi
-extern int numRegisteredClients;											// Numero dei client connessi e registrati
-extern char ranking[RANK_STRING];											// Stringa relativa alla classifica di gioco
-extern int inGame;															// Indica se il gioco e' in corso o meno (1 in corso, 0 altrimenti)
-extern int wroteData;														// Indica se i dati devono essere scritti o meno sulla coda condivisa (1 in caso affermativo, 0 altrimenti)
+extern pthread_t clientHandlerThreads[MAX_CONNECTED_CLIENTS];               // Array relativo ai tid dei thread che gestiscono gli utenti
+extern int clientSocketFileDescriptors[MAX_CONNECTED_CLIENTS];              // Array relativo ai file descriptor dei socket dei client
+extern char board[MATRIX_ROWS][MATRIX_COLUMNS][MAX_ELEM_LENGTH];            // Matrice di gioco
+extern char clientsUsernames[MAX_CONNECTED_CLIENTS][MAX_USERNAME_SIZE];	    // Username dei client connessi
+extern int numClients;                                                      // Numero dei client connessi
+extern int numRegisteredClients;                                            // Numero dei client connessi e registrati
+extern char ranking[RANK_STRING];                                           // Stringa relativa alla classifica di gioco
+extern int inGame;                                                          // Indica se il gioco e' in corso o meno (1 in corso, 0 altrimenti)
+extern int wroteData;                                                       // Indica se i dati devono essere scritti o meno sulla coda condivisa (1 in caso affermativo, 0 altrimenti)
 
-extern pthread_mutex_t mutexClientHandlerThreads;							// Mutex relativo a "clientHandlerThreads"
-extern pthread_mutex_t mutexRanking;										// Mutex relativo a "ranking"
-extern pthread_mutex_t mutexBoard;											// Mutex relativo a "board"
-extern pthread_mutex_t mutexClientsUsernames;								// Mutex relativo a "clientUsernames"
-extern pthread_mutex_t mutexNumClients;										// Mutex relativo a "numClients"
-extern pthread_mutex_t mutexNumRegisteredClients;							// Mutex relativo a "numClientsRegistered"
-extern pthread_mutex_t mutexScoresQueue;									// Mutex relativo alla coda dei punteggi (allocata dinamicamente)
-extern pthread_mutex_t mutexInGame;											// Muter relativo a "inGame"
-extern pthread_mutex_t mutexWroteData;										// Mutex relativo a "wroteData"
-extern pthread_mutex_t mutexAlarm;											// Mutex relativo alla "risorsa" alarm()
+extern pthread_mutex_t mutexClientHandlerThreads;                           // Mutex relativo a "clientHandlerThreads"
+extern pthread_mutex_t mutexRanking;                                        // Mutex relativo a "ranking"
+extern pthread_mutex_t mutexBoard;                                          // Mutex relativo a "board"
+extern pthread_mutex_t mutexClientsUsernames;                               // Mutex relativo a "clientUsernames"
+extern pthread_mutex_t mutexNumClients;                                     // Mutex relativo a "numClients"
+extern pthread_mutex_t mutexNumRegisteredClients;                           // Mutex relativo a "numClientsRegistered"
+extern pthread_mutex_t mutexScoresQueue;                                    // Mutex relativo alla coda dei punteggi (allocata dinamicamente)
+extern pthread_mutex_t mutexInGame;                                         // Muter relativo a "inGame"
+extern pthread_mutex_t mutexWroteData;                                      // Mutex relativo a "wroteData"
+extern pthread_mutex_t mutexAlarm;                                          // Mutex relativo alla "risorsa" alarm()
 
-extern pthread_cond_t notReadyRanking;										// Variabile di condizione relativa a "ranking"
-extern pthread_cond_t notFullQueue;											// Variabile di condizione relativa alla coda dei punteggi (allocata dinamicamente)
+extern pthread_cond_t notReadyRanking;                                      // Variabile di condizione relativa a "ranking"
+extern pthread_cond_t notFullQueue;                                         // Variabile di condizione relativa alla coda dei punteggi (allocata dinamicamente)
 
 
 
@@ -55,12 +55,12 @@ extern pthread_cond_t notFullQueue;											// Variabile di condizione relativ
 
 typedef struct {
 
-    char serverName[MAX_PARAM_SIZE];				// Nome del server
-    int serverPort;									// Porta del server 
-    char matrixFileName[MAX_PARAM_SIZE];			// Nome del file delle matrici
-    int durata;										// Durata delle partite (espressa in minuti)
-    int seed;										// Seed per srand()
-    char dictionaryFileName[MAX_PARAM_SIZE];		// Nome del file dizionario
+    char serverName[MAX_PARAM_SIZE];                // Nome del server
+    int serverPort;                                 // Porta del server 
+    char matrixFileName[MAX_PARAM_SIZE];            // Nome del file delle matrici
+    int durata;                                     // Durata delle partite (espressa in minuti)
+    int seed;                                       // Seed per srand()
+    char dictionaryFileName[MAX_PARAM_SIZE];        // Nome del file dizionario
 
 } params;
 
@@ -70,17 +70,17 @@ typedef struct {
 
 typedef struct qn {
 
-    int score;								// Punteggio
-    char username[MAX_USERNAME_SIZE];		// Username
-     struct qn * next; 						// Puntatore all'elemento successivo della coda
-    struct qn * prev;						// Puntatore all'elemento precedente della coda
+    int score;                              // Punteggio
+    char username[MAX_USERNAME_SIZE];       // Username
+     struct qn * next;                      // Puntatore all'elemento successivo della coda
+    struct qn * prev;                       // Puntatore all'elemento precedente della coda
 
 } queue_node;
 
 typedef struct {
 
-        queue_node* head;	// Puntatore alla testa della coda
-        queue_node* tail;	// Puntatore alla fine della coda
+        queue_node* head;   // Puntatore alla testa della coda
+        queue_node* tail;   // Puntatore alla fine della coda
 
 } queue;
 
@@ -90,8 +90,8 @@ typedef struct {
 
 typedef struct ln {
 
-    char guess[MAX_WORD_LENGTH];		// Parola proposta
-    struct ln * next;					// Puntatore all'elemento successivo della lista
+    char guess[MAX_WORD_LENGTH];        // Parola proposta
+    struct ln * next;                   // Puntatore all'elemento successivo della lista
 
 } linked_list_node;
 
@@ -101,9 +101,9 @@ typedef struct ln {
 
 typedef struct {
 
-    char matrixFileName[MAX_PARAM_SIZE];			// Nome del file delle matrici
-    int generateFrom;								// Indica come inizializzare la matrice, 0 random, altrimenti da file
-    int durata;										// Durata delle partite (espressa in minuti)
+    char matrixFileName[MAX_PARAM_SIZE];            // Nome del file delle matrici
+    int generateFrom;                               // Indica come inizializzare la matrice, 0 random, altrimenti da file
+    int durata;                                     // Durata delle partite (espressa in minuti)
 
 } arb_args;
 
@@ -113,9 +113,9 @@ typedef struct {
 
 typedef struct {
 
-    int clientSocketFD;								// File descriptor del socket
-    char dictionaryFileName[MAX_PARAM_SIZE];		// Nome del file dizionario
-    queue* scoresQueue;								// Coda condivisa dei punteggi
+    int clientSocketFD;                             // File descriptor del socket
+    char dictionaryFileName[MAX_PARAM_SIZE];        // Nome del file dizionario
+    queue* scoresQueue;                             // Coda condivisa dei punteggi
 
 } client_handler_args;
 
@@ -125,8 +125,8 @@ typedef struct {
 
 typedef struct {
 
-    int score;										// Punteggio
-    char username[MAX_USERNAME_SIZE];				// Username
+    int score;                                      // Punteggio
+    char username[MAX_USERNAME_SIZE];               // Username
 
 } player;
 

@@ -2,14 +2,14 @@
 
 
 
-//	Controlla la validità della parola "word" all'interno della matrice "board".
-//	Si avvale di una matrice di supporto per tenere traccia delle caselle visitate e utilizza
-//	la funzione ricorsiva "word_rec_check" per controllare la validità della parola in modo Depth First Search.
+//  Controlla la validità della parola "word" all'interno della matrice "board".
+//  Si avvale di una matrice di supporto per tenere traccia delle caselle visitate e utilizza
+//  la funzione ricorsiva "word_rec_check" per controllare la validità della parola in modo Depth First Search.
 int word_checker(int rows, int columns, char board[rows][columns][MAX_ELEM_LENGTH], char* word) {
 
     int found = 0;
-    int **visitedMatrix = generate_visited_matrix(rows, columns);	// Matrice degli elementi visitati
-    char *toUpperWord = to_upper_word(word);						// Parola "word" in upper case
+    int **visitedMatrix = generate_visited_matrix(rows, columns);   // Matrice degli elementi visitati
+    char *toUpperWord = to_upper_word(word);                        // Parola "word" in upper case
 
     for(int i = 0 ; i < rows ; i ++) {
         for(int j = 0 ; j < columns ; j ++) {
@@ -40,9 +40,9 @@ int word_checker(int rows, int columns, char board[rows][columns][MAX_ELEM_LENGT
 
 
 
-//	Ricerca la parola "word" nella matrice "board" in modo ricorsivo.
-//	Vengono controllati ricorsivamente tutti gli elementi adiacenti e la chiamata ricorsiva e' effettuata solo dopo
-//	aver controllato che il carattere sia uguale e valido, quindi dal momento in cui il carattere e' l'ultimo la stringa e' valida
+//  Ricerca la parola "word" nella matrice "board" in modo ricorsivo.
+//  Vengono controllati ricorsivamente tutti gli elementi adiacenti e la chiamata ricorsiva e' effettuata solo dopo
+//  aver controllato che il carattere sia uguale e valido, quindi dal momento in cui il carattere e' l'ultimo la stringa e' valida
 int word_rec_check(int rows, int columns, char board[rows][columns][MAX_ELEM_LENGTH], int** visitedMatrix, char* word, int i, int j, int currentWordCharIndex) {
 
     // Indici per elementi adiacenti
@@ -60,7 +60,7 @@ int word_rec_check(int rows, int columns, char board[rows][columns][MAX_ELEM_LEN
     // Se la parola e' finita, essa e' valida
     if(is_word_rec_ended(word,currentWordCharIndex + 1))
         return 1;
-    
+
     // Gestione di "Qu"
     // Se la lettera corrente della parola "word" e' Q significa che e' seguita da una "u" (altrimenti la funzione non sarebbe stata eseguita)
     // Se dopo la u la stringa termina, la funzione restituisce 1, altrimenti continua
@@ -226,7 +226,7 @@ int is_equal_char(char* boardStr, char* word, int wordCharIndex) {
     else 
         // Controllo del carattere della parola "word" con il carattere "boardStr[0]" della matrice
         return word[wordCharIndex] == boardStr[0];
-        
+
 }
 
 
@@ -258,7 +258,7 @@ char* to_upper_word(char* word) {
     MALLOC_CHECK(toUpperWord);
 
     for(int i = 0 ; i < toMalloc ; i++)
-        
+
         // L'elemento corrente di "toUpperWord" e' dato dal carattere corrente di "word" in upper case
         toUpperWord[i] = toupper(word[i]);
 
@@ -282,7 +282,7 @@ int word_points(char* word) {
         if(toupper(word[i]) != 'Q')
             
             points++;
-    
+
     return points;
 
 }
@@ -291,9 +291,9 @@ int word_points(char* word) {
 
 // Inizializza una matrice di gioco in modo random
 void init_rand_board_matrix(int rows, int columns, char board[rows][columns][MAX_ELEM_LENGTH]) {
-    
+
     char randomChar;
-    
+
     for(int i = 0 ; i < rows ; i++) {
         for(int j = 0 ; j < columns ; j++) {
 
@@ -344,7 +344,7 @@ char generate_rand_char() {
 
 // Inizializza una matrice da file di testo contenente su ogni riga gli elementi della matrice separati da spazio
 void init_file_board_matrix(FILE* filePtr, int rows, int columns, char board[rows][columns][MAX_ELEM_LENGTH]) {
-    
+
     // Definizione di un buffer di lettura. La lunghezza massima e' data dal caso in cui ogni elemento sia "Qu" (contando spazi e \n)
     int maxFileRowLength = (rows * columns * 2) + ((rows * columns) + 1);
     char fileRow[maxFileRowLength];
@@ -361,7 +361,7 @@ void init_file_board_matrix(FILE* filePtr, int rows, int columns, char board[row
         return;
 
     }
-    
+
     // Conversione della riga in upper case, in caso non lo fosse già
     char *toUppeFileRow = to_upper_row(fileRow);
 
@@ -441,8 +441,8 @@ char* to_upper_row(char* fileRow) {
 // Controlla la validità della riga letta dal file delle matrici
 int check_file_row(char* fileRow, int rows, int columns) {
 
-    int fileRowLength = strlen(fileRow);							// Lunghezza della riga del file (con '\n' già rimosso da del_endl())
-    int minLength = (rows * columns * 2) - 1;						// Lunghezza minima contando spazi e considerando solo caratteri singoli
+    int fileRowLength = strlen(fileRow);                            // Lunghezza della riga del file (con '\n' già rimosso da del_endl())
+    int minLength = (rows * columns * 2) - 1;                       // Lunghezza minima contando spazi e considerando solo caratteri singoli
 
     // Se la lunghezza e' valida restituisce 0, altrimenti -1
     if(fileRowLength < minLength)

@@ -4,34 +4,34 @@
 
 // Inizializzazione variabili globali
 
-pthread_t clientHandlerThreads[MAX_CONNECTED_CLIENTS] = {0};				// Array relativo ai tid dei thread che gestiscono gli utenti
-int clientSocketFileDescriptors[MAX_CONNECTED_CLIENTS] = {0};				// Array relativo ai file descriptor dei socket dei client connessi
-char board[MATRIX_ROWS][MATRIX_COLUMNS][MAX_ELEM_LENGTH];					// Matrice di gioco
-char clientsUsernames[MAX_CONNECTED_CLIENTS][MAX_USERNAME_SIZE] = {""};		// Array relativo agli username dei client connessi
-int numRegisteredClients = 0;												// Numero dei client connessi e registrati
-char ranking[RANK_STRING] = {""};											// Stringa relativa alla classifica di gioco
-int inGame = 0;																// Indica se il gioco e' in corso o meno (1 in corso, 0 altrimenti)
-int wroteData = 0;															// Indica se i dati devono essere scritti o meno sulla coda condivisa (1 in caso affermativo, 0 altrimenti)
+pthread_t clientHandlerThreads[MAX_CONNECTED_CLIENTS] = {0};                // Array relativo ai tid dei thread che gestiscono gli utenti
+int clientSocketFileDescriptors[MAX_CONNECTED_CLIENTS] = {0};               // Array relativo ai file descriptor dei socket dei client connessi
+char board[MATRIX_ROWS][MATRIX_COLUMNS][MAX_ELEM_LENGTH];                   // Matrice di gioco
+char clientsUsernames[MAX_CONNECTED_CLIENTS][MAX_USERNAME_SIZE] = {""};     // Array relativo agli username dei client connessi
+int numRegisteredClients = 0;                                               // Numero dei client connessi e registrati
+char ranking[RANK_STRING] = {""};                                           // Stringa relativa alla classifica di gioco
+int inGame = 0;                                                             // Indica se il gioco e' in corso o meno (1 in corso, 0 altrimenti)
+int wroteData = 0;                                                          // Indica se i dati devono essere scritti o meno sulla coda condivisa (1 in caso affermativo, 0 altrimenti)
 
-pthread_mutex_t mutexClientHandlerThreads = PTHREAD_MUTEX_INITIALIZER;		// Mutex relativo a "clientHandlerThreads" e "clientSocketFileDescriptors"
-pthread_mutex_t mutexBoard = PTHREAD_MUTEX_INITIALIZER;						// Mutex relativo a "board"
-pthread_mutex_t mutexClientsUsernames = PTHREAD_MUTEX_INITIALIZER;			// Mutex relativo a "clientsUsernames"
-pthread_mutex_t mutexNumRegisteredClients = PTHREAD_MUTEX_INITIALIZER;		// Mutex relativo a "numClientsRegistered"
-pthread_mutex_t mutexScoresQueue = PTHREAD_MUTEX_INITIALIZER;				// Mutex relativo alla coda dei punteggi (allocata dinamicamente)
-pthread_mutex_t mutexRanking = PTHREAD_MUTEX_INITIALIZER;					// Mutex relativo a "ranking"
-pthread_mutex_t mutexInGame = PTHREAD_MUTEX_INITIALIZER;					// Muter relativo a "inGame"
-pthread_mutex_t mutexWroteData = PTHREAD_MUTEX_INITIALIZER;					// Mutex relativo a "wroteData"
-pthread_mutex_t mutexAlarm = PTHREAD_MUTEX_INITIALIZER;						// Mutex relativo alla "risorsa" alarm()
+pthread_mutex_t mutexClientHandlerThreads = PTHREAD_MUTEX_INITIALIZER;      // Mutex relativo a "clientHandlerThreads" e "clientSocketFileDescriptors"
+pthread_mutex_t mutexBoard = PTHREAD_MUTEX_INITIALIZER;                     // Mutex relativo a "board"
+pthread_mutex_t mutexClientsUsernames = PTHREAD_MUTEX_INITIALIZER;          // Mutex relativo a "clientsUsernames"
+pthread_mutex_t mutexNumRegisteredClients = PTHREAD_MUTEX_INITIALIZER;      // Mutex relativo a "numClientsRegistered"
+pthread_mutex_t mutexScoresQueue = PTHREAD_MUTEX_INITIALIZER;               // Mutex relativo alla coda dei punteggi (allocata dinamicamente)
+pthread_mutex_t mutexRanking = PTHREAD_MUTEX_INITIALIZER;                   // Mutex relativo a "ranking"
+pthread_mutex_t mutexInGame = PTHREAD_MUTEX_INITIALIZER;                    // Muter relativo a "inGame"
+pthread_mutex_t mutexWroteData = PTHREAD_MUTEX_INITIALIZER;                 // Mutex relativo a "wroteData"
+pthread_mutex_t mutexAlarm = PTHREAD_MUTEX_INITIALIZER;                     // Mutex relativo alla "risorsa" alarm()
 
-pthread_cond_t notReadyRanking = PTHREAD_COND_INITIALIZER;					// Variabile di condizione relativa "ranking"
-pthread_cond_t notFullQueue = PTHREAD_COND_INITIALIZER;						// Variabile di condizione relativa alla coda dei punteggi (allocata dinamicamente)
+pthread_cond_t notReadyRanking = PTHREAD_COND_INITIALIZER;                  // Variabile di condizione relativa "ranking"
+pthread_cond_t notFullQueue = PTHREAD_COND_INITIALIZER;                     // Variabile di condizione relativa alla coda dei punteggi (allocata dinamicamente)
 
 
 
 // Thread: scorer che gestisce la classifica dei punteggi
 void* thread_scorer(void* args) {
 
-    queue *scoresQueue;				// Coda condivisa dei punteggi
+    queue *scoresQueue;             // Coda condivisa dei punteggi
 
     // Casting e assegnamento della coda dei punteggi "scoresQueue"
     scoresQueue = (queue*)args;
@@ -76,8 +76,8 @@ void* thread_scorer(void* args) {
 // Copia la coda dei punteggi in un array di tipo "player"
 void copy_score_queue(queue* scoreQueue, player players[]) {
     
-    queue_node* head = scoreQueue->head;	// Puntatore alla testa della coda
-    int i = 0;								// Indice per scorrere "players"
+    queue_node* head = scoreQueue->head;    // Puntatore alla testa della coda
+    int i = 0;                              // Indice per scorrere "players"
 
     // Finche' ci sono elementi in coda
     while(head != NULL) {
@@ -158,12 +158,12 @@ int cmp_players(const void* playerA, const void* playerB) {
 void *thread_arb(void *args) {
 
     int returnValue;
-    int generateFrom;								// Indica come inizializzare la matrice. Se 0 random, altrimenti da file
-    char matrixFileName[MAX_PARAM_SIZE];			// Nome del file delle matrici
-    FILE *matrixFile;								// File delle matrici
-    int durata;										// Durata delle partite (espressa in secondi)
-    sigset_t signalSet;								// Set dei segnali
-    int sig;										// Segnale bloccato da sigwait
+    int generateFrom;                               // Indica come inizializzare la matrice. Se 0 random, altrimenti da file
+    char matrixFileName[MAX_PARAM_SIZE];            // Nome del file delle matrici
+    FILE *matrixFile;                               // File delle matrici
+    int durata;                                     // Durata delle partite (espressa in secondi)
+    sigset_t signalSet;                             // Set dei segnali
+    int sig;                                        // Segnale bloccato da sigwait
     
     // Casting e assegnazione di "generateFrom"
     generateFrom = ((arb_args*)args)->generateFrom;
@@ -246,9 +246,9 @@ void timer_scheduler(int durata, sigset_t* signalSet, int* sig) {
 
     int returnValue;
 
-    int pauseSeconds = 60;							// Secondi di pausa
-    char *pauseString = "Avvio della pausa\n";		// Stringa da stampare su stdout per notificare la pausa
-    char *startString = "Avvio della partita\n";	// Stringa da stampare su stdout per notificare l'avvio di una partita
+    int pauseSeconds = 60;                          // Secondi di pausa
+    char *pauseString = "Avvio della pausa\n";      // Stringa da stampare su stdout per notificare la pausa
+    char *startString = "Avvio della partita\n";    // Stringa da stampare su stdout per notificare l'avvio di una partita
 
     // Scrittura su stdout dell'avvio della pausa
     SYSC(returnValue, write(STDOUT_FILENO, pauseString, sizeof(char) * strlen(pauseString)), "Error Write pause");
@@ -309,17 +309,17 @@ void timer_scheduler(int durata, sigset_t* signalSet, int* sig) {
 void* thread_handle_connection(void* args) {
 
     int returnValue;
-    int clientSocketFD;												// File descriptor del socket relativo al client
-    char dictionaryFileName[MAX_PARAM_SIZE];						// Nome del file dizionario
-    FILE * dictionaryFile;											// File dizionario
-    message receive;												// Struttura per la ricezione del messaggio
-    queue *scoresQueue;												// Coda condivisa dei punteggi
-    linked_list_node *guessedWords;									// Linked list delle parole proposte
-    
-    char *connectPrint = "Client Connesso\n";						// Stringa per la stampa di una connessione avvenuta
-    char username[MAX_USERNAME_SIZE] = {""};						// Username client
-    int isRegistered = 0;											// Indica se l'utente e' registrato o meno (0 se non lo e')
-    int clientScore = 0;											// Punteggio del client
+    int clientSocketFD;                                             // File descriptor del socket relativo al client
+    char dictionaryFileName[MAX_PARAM_SIZE];                        // Nome del file dizionario
+    FILE * dictionaryFile;                                          // File dizionario
+    message receive;                                                // Struttura per la ricezione del messaggio
+    queue *scoresQueue;                                             // Coda condivisa dei punteggi
+    linked_list_node *guessedWords;                                 // Linked list delle parole proposte
+
+    char *connectPrint = "Client Connesso\n";                       // Stringa per la stampa di una connessione avvenuta
+    char username[MAX_USERNAME_SIZE] = {""};                        // Username client
+    int isRegistered = 0;                                           // Indica se l'utente e' registrato o meno (0 se non lo e')
+    int clientScore = 0;                                            // Punteggio del client
 
     // Casting e assegnazione del Socket File Descriptor
     clientSocketFD = ((client_handler_args*)args)->clientSocketFD;
@@ -430,12 +430,12 @@ void handle_client_request(message receive, int socketFD, char username[], int* 
 // Gestisce richieste del client di tipo "MSG_REGISTRA_UTENTE"
 void handle_registration(message receive, int socketFD, char username[], int* isRegistered) {
 
-    message response;												// Struttura messaggio di risposta
+    message response;                                               // Struttura messaggio di risposta
 
-    char *alreadyRegistered = "\nSei gia' registrato\n\n";			// Stringa per comunicare che l'utente e' già registrato
-    char *lengthError = "\nUsername troppo lungo\n\n";				// Stringa per comunicare errore sulla lunghezza
-    char *alreadUsed = "\nUsername gia' utilizzato\n\n";			// Stringa per comunicare username già utilizzato
-    char *registered = "\nUtente registrato correttamente\n\n";		// Stringa per comunicare la registrazione avvenuta correttamente
+    char *alreadyRegistered = "\nSei gia' registrato\n\n";          // Stringa per comunicare che l'utente e' già registrato
+    char *lengthError = "\nUsername troppo lungo\n\n";              // Stringa per comunicare errore sulla lunghezza
+    char *alreadUsed = "\nUsername gia' utilizzato\n\n";            // Stringa per comunicare username già utilizzato
+    char *registered = "\nUtente registrato correttamente\n\n";     // Stringa per comunicare la registrazione avvenuta correttamente
 
     // Invio di "MSG_ERR" se l'utente e' già registrato
     if(*isRegistered) {
@@ -507,9 +507,9 @@ void handle_registration(message receive, int socketFD, char username[], int* is
 // Invia il tempo rimanente alla fine della partita oppure il tempo restante alla prossima partita
 void send_time(int socketFD) {
 
-    message response;							// Struttura messaggio di risposta
-    int timeToSend;								// Tempo partita o attesa da comunicare
-    char timeStr[SMALL_BUF_SIZE];				// Stringa contenente il tempo da inviare
+    message response;                           // Struttura messaggio di risposta
+    int timeToSend;                             // Tempo partita o attesa da comunicare
+    char timeStr[SMALL_BUF_SIZE];               // Stringa contenente il tempo da inviare
 
     // Lock del mutex relativo ad alarm
     SYST(pthread_mutex_lock(&mutexAlarm));
@@ -557,7 +557,7 @@ void send_time(int socketFD) {
 // Controlla se un nome utente e' già registrato in "clientsUsernames", in caso lo fosse restituisce 1, altrimenti 0
 int is_user_registered(char* username) {
 
-    int found = 0;				// Indica se lo username e' stato trovato
+    int found = 0;                  // Indica se lo username e' stato trovato
 
     // Lock del mutex relativo alla risorsa condivisa dei nomi utenti "clienstUsernames"
     SYST(pthread_mutex_lock(&mutexClientsUsernames));
@@ -630,11 +630,11 @@ void registered_clients_number_update(int operator) {
 
     // Lock del mutex relativo a "numRegisteredClients"
     SYST(pthread_mutex_lock(&mutexNumRegisteredClients));
-    
+
     if(operator) 
-        
+
         numRegisteredClients -= 1;
-    
+
     else 
         numRegisteredClients += 1;	
 
@@ -648,15 +648,15 @@ void registered_clients_number_update(int operator) {
 // Gestisce richieste del client di tipo "MSG_PAROLA"
 void handle_guess(message receive, int socketFD, int* clientScore, FILE* dictionaryFile, linked_list_node** guessedWords, int* isRegistered) {
 
-    message response;																// Struttura del messaggio di risposta
-    char pointsStr[FIXED_STRING_SIZE];												// Stringa rappresentante i punti 
+    message response;                                                               // Struttura del messaggio di risposta
+    char pointsStr[FIXED_STRING_SIZE];                                              // Stringa rappresentante i punti 
 
-    int inMatrix = 0;																// Indica se la parola e' presente nella matrice
-    int isCorrectGuess = 0;															// Indica se la parola proposta e' corretta e possono essere assegnati i punti (1 se e' corretta, 0 altrimenti)
-    int points = 0;																	// Punti della parola corrente
-    char *guess = receive.data;														// Parola proposta
-    char *notRegisteredStr = "\nDevi essere registrato per proporre parole.\n\n";	// Stringa per notificare che il client deve essere registrato per proporre parole
-    char *notInGameStr = "\nIl gioco non e' in corso.\n\n";							// Stringa per notificare che il gioco deve essere in corso per proporre parole
+    int inMatrix = 0;                                                               // Indica se la parola e' presente nella matrice
+    int isCorrectGuess = 0;                                                         // Indica se la parola proposta e' corretta e possono essere assegnati i punti (1 se e' corretta, 0 altrimenti)
+    int points = 0;                                                                 // Punti della parola corrente
+    char *guess = receive.data;                                                     // Parola proposta
+    char *notRegisteredStr = "\nDevi essere registrato per proporre parole.\n\n";   // Stringa per notificare che il client deve essere registrato per proporre parole
+    char *notInGameStr = "\nIl gioco non e' in corso.\n\n";                         // Stringa per notificare che il gioco deve essere in corso per proporre parole
 
     // Invio di "MSG_ERR" se l'utente non e' registrato
     if(!(*isRegistered)) {
@@ -760,8 +760,8 @@ void handle_matrix_and_time(int socketFD, int isRegistered) {
     // Se l'utente non e' registrato invia un messaggio di errore
     if(!isRegistered) {
 
-        message response;																	// Struttura del messaggio di risposta
-        char* notReg = "\nNon puoi richiedere la matrice se non sei registrato.\n\n";		// Stringa di risposta
+        message response;                                                                   // Struttura del messaggio di risposta
+        char* notReg = "\nNon puoi richiedere la matrice se non sei registrato.\n\n";       // Stringa di risposta
         
         // Inizializzazione ed invio del messaggio
         init_message(&response, strlen(notReg), MSG_ERR, notReg);
@@ -777,8 +777,8 @@ void handle_matrix_and_time(int socketFD, int isRegistered) {
     // Invio della matrice se il gioco e' in corso (inGame == 1)
     if(get_flag(0)) {
 
-        message response;						// Struttura del messaggio di risposta
-        char matrixBoard[BUF_SIZE] = {""};		// Stringa che immagazzina la matrice "board"
+        message response;                       // Struttura del messaggio di risposta
+        char matrixBoard[BUF_SIZE] = {""};      // Stringa che immagazzina la matrice "board"
 
         // Conversione della matrice "board" in stringa in "matrixBoard"
         matrix_to_string(matrixBoard);
@@ -831,7 +831,7 @@ void matrix_to_string(char toString[]) {
 void handle_final_score(int socketFD, int isRegitered) {
 
     message response;
-    char rankingStr[RANK_STRING + FIXED_STRING_SIZE];	// Stringa destinazione per la formattazione di "ranking"
+    char rankingStr[RANK_STRING + FIXED_STRING_SIZE];   // Stringa destinazione per la formattazione di "ranking"
 
     // Se l'utente non e' registrato viene inviato un messaggio di tipo "MSG_ERR"
     if(!isRegitered) {
@@ -887,7 +887,7 @@ void handle_exit(int socketFD, char username[], int isRegistered, FILE* dictiona
 
     message response;
     int returnValue;
-    char *disconnectPrint = "Client Disconnesso\n";		// Messaggio di disconnessione
+    char *disconnectPrint = "Client Disconnesso\n";     // Messaggio di disconnessione
 
     // Cancellazione dello username del client da "clientsUsernames" (se registrato) e decremento del numero di client registrati da "numRegisteredClients"
     if(isRegistered)	
@@ -1005,7 +1005,7 @@ void enqueue(queue** toInitQueue, int score, char username[]) {
 
         // Altrimenti il puntatore al successivo della fine della coda deve puntare al nuovo nodo
         ((*toInitQueue)->tail)->next = newQueueNode;
-    
+
     // Aggiornamento della fine della coda al nuovo nodo
     (*toInitQueue)->tail = newQueueNode;
 
@@ -1018,13 +1018,13 @@ void dequeue(queue** toDeqQueue) {
 
     if(is_empty_queue(*toDeqQueue))
         return;
-    
+
     // Nodo di supporto che punta alla coda di "toDeqQueue"
     queue_node* tempNode = (*toDeqQueue)->head;
-        
+
     // Aggiornamento della coda
     (*toDeqQueue)->head = tempNode->next;
-    
+
     // Se la testa e' diventata vuota, anche la fine della coda vale NULL
     if(!(*toDeqQueue)->head)
 
@@ -1052,8 +1052,8 @@ void destroy_queue(queue ** toDestroyQueue) {
 // Conta gli elementi presenti nella coda
 int get_queue_length(queue* toCountQueue) {
 
-    queue_node *currentPtr = toCountQueue->head;		// Puntatore all'elemento corrente
-    int elementsNum = 0;								// Numero degli elementi in coda
+    queue_node *currentPtr = toCountQueue->head;        // Puntatore all'elemento corrente
+    int elementsNum = 0;                                // Numero degli elementi in coda
 
     while(currentPtr != NULL) {
 
@@ -1115,8 +1115,8 @@ void destroy_linked_list(linked_list_node** head) {
 // Controlla se "guess" e' presente nella linked list. Se presente restituisce 1, 0 altrimenti.
 int check_linked_list(linked_list_node* head, char guess[]) {
 
-    linked_list_node* currentPtr = head;	// Puntatore all'elemento corrente della lista
-    int result = 0;							// Risultato che indica se "guess" e' presente o meno
+    linked_list_node* currentPtr = head;    // Puntatore all'elemento corrente della lista
+    int result = 0;                         // Risultato che indica se "guess" e' presente o meno
 
     // Finche' ci sono elementi nella lista
     while(currentPtr != NULL) {
@@ -1140,10 +1140,10 @@ int check_linked_list(linked_list_node* head, char guess[]) {
 // Inizializza la struttura "params" con i parametri di "argv[]"
 void init_params(int argc, char* argv[], params* serverParams) {
 
-    int nonOptionalParamsNum = 2;		// Numero di parametri obbligatori
-    int optionalParamsNum = 4;			// Numero di parametri opzionali
-    int durata = 3;						// Durata di default
-    int minDurata = 1;					// Durata minima
+    int nonOptionalParamsNum = 2;       // Numero di parametri obbligatori
+    int optionalParamsNum = 4;          // Numero di parametri opzionali
+    int durata = 3;                     // Durata di default
+    int minDurata = 1;                  // Durata minima
     
     // Opzioni dei parametri opzionali
     char* matrixParam = "--matrici";
@@ -1164,10 +1164,10 @@ void init_params(int argc, char* argv[], params* serverParams) {
     serverParams->serverPort = atoi(argv[2]);
 
     // Inizializzazione dei parametri opzionali 
-    for(int i = (nonOptionalParamsNum + 1) ; i < argc ; i+= 2) {		// i viene incrementato di 2 dato che deve saltare il valore del parametro opzionale
+    for(int i = (nonOptionalParamsNum + 1) ; i < argc ; i+= 2) {        // i viene incrementato di 2 dato che deve saltare il valore del parametro opzionale
 
-        char *currentParam = argv[i];		// Parola chiave ("--parametro")
-        char *nextParam = argv[i + 1];		// Valore che segue la parola chiave
+        char *currentParam = argv[i];       // Parola chiave ("--parametro")
+        char *nextParam = argv[i + 1];      // Valore che segue la parola chiave
 
         // Confronto del parametro corrente con i vari nomi di parametri opzionali e inizializzazione per ognuno di essi
         for(int j = 0 ; j < optionalParamsNum ; j ++) {
@@ -1185,15 +1185,15 @@ void init_params(int argc, char* argv[], params* serverParams) {
                 }
 
             }
-            
+
             // Se il parametro e' "--seed"
             else if(!strcmp(currentParam, seedParam))
                 serverParams->seed = atoi(nextParam);
-            
+
             // Se il parametro e' "--diz"
             else if(!strcmp(currentParam,dictionaryParam))
                 param_copy(serverParams, nextParam, 'd');
-            
+
             // Altrimenti restituisce un errore
             else {
 
@@ -1327,7 +1327,7 @@ void signal_client_handlers() {
         if(clientHandlerThreads[i] != 0)
 
             pthread_kill(clientHandlerThreads[i], SIGUSR1);
-        
+
     }
 
     // Unlock del mutex
@@ -1340,7 +1340,7 @@ void signal_client_handlers() {
 // Restituisce il contenuto della variabile globale "inGame" se choice e' uguale a 0, altrimenti restituisce quello di "wroteData"
 int get_flag(int choice) {
     
-    int result;			// Risultato da essere restituito
+    int result;         // Risultato da essere restituito
 
     if(choice == 0) {
 

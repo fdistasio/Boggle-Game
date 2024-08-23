@@ -4,17 +4,17 @@
 
 int main(int argc, char* argv[]) {
 
-    int returnValue;													// Valore di ritorno per la gestione degli errori delle chiamate di sistema
-    FILE * matrixFile;													// File delle matrici
-    params serverParams;												// Struttura contenente i parametri di avvio del server
-    int serverSocketFD, clientSocketFD;									// File Descriptor dei socket client e server
-    struct sockaddr_in serverAddr, clientAddr;							// Strutture sockaddr
-    socklen_t clientAddrLength;											// Lunghezza indirizzo client
-    sigset_t signalSet;													// Set di segnali
-    struct sigaction sig;												// Struct per sigaction
-    message response;													// Struttura per il messaggio "MSG_FINE" alla terminazione del server
+    int returnValue;                                                    // Valore di ritorno per la gestione degli errori delle chiamate di sistema
+    FILE * matrixFile;                                                  // File delle matrici
+    params serverParams;                                                // Struttura contenente i parametri di avvio del server
+    int serverSocketFD, clientSocketFD;                                 // File Descriptor dei socket client e server
+    struct sockaddr_in serverAddr, clientAddr;                          // Strutture sockaddr
+    socklen_t clientAddrLength;                                         // Lunghezza indirizzo client
+    sigset_t signalSet;                                                 // Set di segnali
+    struct sigaction sig;                                               // Struct per sigaction
+    message response;                                                   // Struttura per il messaggio "MSG_FINE" alla terminazione del server
 
-    int generateFrom = 0;												// Indica come inizializzare la matrice, 0 random, altrimenti da file
+    int generateFrom = 0;                                               // Indica come inizializzare la matrice, 0 random, altrimenti da file
 
 
     // Maschera per "SIGALRM"
@@ -22,7 +22,7 @@ int main(int argc, char* argv[]) {
     SYSC(returnValue, sigaddset(&signalSet, SIGALRM), "Error signal set");
     SYST(pthread_sigmask(SIG_SETMASK, &signalSet, NULL));
 
-    // Gestore per i segnali "SIGINT" e "SIGUSR1"		
+    // Gestore per i segnali "SIGINT" e "SIGUSR1"
     memset(&sig, 0, sizeof(sig));
     sig.sa_handler = signal_handler;
     sigaction(SIGUSR1, &sig, NULL);
@@ -45,7 +45,7 @@ int main(int argc, char* argv[]) {
         generateFrom = 1;
 
     }
-        
+
     // Se la matrice non e' inizializzata da file, verrà inizializzata in modo random, se il seed non è inizializzato viene generato tramite time(NULL)
     (!serverParams.seed) ? srand(serverParams.seed) : srand(time(NULL));
 
@@ -144,7 +144,7 @@ int main(int argc, char* argv[]) {
     }
 
     // Terminazione server
-    
+
     // Lock del mutex relativo all'array dei client connessi
     SYST(pthread_mutex_lock(&mutexClientHandlerThreads));
 
@@ -156,10 +156,10 @@ int main(int argc, char* argv[]) {
 
         if(clientSocketFileDescriptors[i] != 0)
             write_socket(clientSocketFileDescriptors[i], response);
-        
+
     }
 
     // Unlock del mutex
     SYST(pthread_mutex_unlock(&mutexClientHandlerThreads));
-    
+
 }
