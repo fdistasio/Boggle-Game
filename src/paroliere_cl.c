@@ -4,7 +4,7 @@
 
 int main(int argc, char* argv[]) {
 
-    int returnValue;						        // Valore di ritorno per la gestione degli errori delle chiamate di sistema
+    int returnValue;                                // Valore di ritorno per la gestione degli errori delle chiamate di sistema
     char serverName[MAX_PARAM_SIZE];                // Nome del server (argv[1])
     int serverPort;                                 // Porta del server (argv[2])
     int clientSocketFD;                             // File descriptor del socket
